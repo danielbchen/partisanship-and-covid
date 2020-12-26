@@ -52,3 +52,27 @@ def wiki_extractor():
     df = pd.DataFrame(vote_share_dict)
 
     return df
+
+
+def wiki_cleaner(dataframe):
+    '''
+    Extracts only the name of the state from hyperlinks in the State column,
+    and cleans up vote counts to manipulatable numeric format.
+    '''
+
+    df = dataframe.copy()
+
+    df = df.replace(',', '', regex=True)
+    cols = ['CLINTON_VOTES', 'TRUMP_VOTES']
+    df[cols] = df[cols].apply(pd.to_numeric, errors='coerce')
+
+    df['STATE'] = [text.split('in_')[-1] for text in df['STATE']]
+    df = df[~df['STATE'].str.startswith('/')].reset_index().drop('index', 1)
+    state_replacements = {
+        'the_District_of_Columbia': 'DC',
+        'Washington_(state)': 'Washington'
+    }
+    df['STATE'] = df['STATE'].replace(state_replacements)
+    df['STATE'] = df['STATE'].str.replace('_', ' ')
+
+    return df
