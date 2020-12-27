@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import numpy as np
 import operator
 import pandas as pd
 import requests
@@ -74,5 +75,22 @@ def wiki_cleaner(dataframe):
     }
     df['STATE'] = df['STATE'].replace(state_replacements)
     df['STATE'] = df['STATE'].str.replace('_', ' ')
+
+    return df
+
+
+def party_calculator(dataframe):
+    '''
+    Creates new column based on scraped Wikipedia data determining if a
+    given state is red or blue.
+    '''
+
+    df = dataframe.copy()
+
+    df['PARTY_ID'] = np.where(
+        df['CLINTON_VOTES'] > df['TRUMP_VOTES'],
+        'Democratic',
+        'Republican'
+    )
 
     return df
