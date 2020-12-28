@@ -94,3 +94,26 @@ def party_calculator(dataframe):
     )
 
     return df
+
+
+def get_states():
+    '''
+    Returns a list of state abbreviations + District of Columbia.
+    '''
+
+    fips_state_xwalk = us.states.mapping('fips', 'abbr')
+
+    fips_state_xwalk = {fips: state for fips, state in fips_state_xwalk.items()
+                            if fips is not None} 
+
+    fips_state_xwalk = {int(fips): str(state) for fips, state in fips_state_xwalk.items()}
+
+    fips_state_xwalk = dict(sorted(fips_state_xwalk.items()))
+
+    exclusions = [60, 66, 69, 72, 78]
+    fips_state_xwalk = {fips: state for fips, state in fips_state_xwalk.items()
+                            if fips not in exclusions}
+
+    states = list(fips_state_xwalk.values())
+
+    return states
