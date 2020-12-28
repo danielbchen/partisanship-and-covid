@@ -3,6 +3,7 @@ import numpy as np
 import operator
 import pandas as pd
 import requests
+import us
 
 
 def wiki_extractor():
@@ -136,9 +137,7 @@ def county_vote_extractor():
 
         raw_text = []
         for state in states:
-            response = requests.get('https://townhall.com/election/2016/president/'
-                                    + state
-                                    + '/county')  # JL: might read better if you define a base url with {} for state, then use format strings to fill it in in the loop
+            response = requests.get('https://townhall.com/election/2016/president/{}/county'.format(state))
             soup = BeautifulSoup(response.text, 'html.parser')
             tables = soup.find_all('table', attrs={'class': 'table ec-table'})
 
@@ -173,9 +172,7 @@ def county_vote_extractor():
 
         counts = []
         for state in states:
-            response = requests.get('https://townhall.com/election/2016/president/'
-                                    + state
-                                    + '/county')
+            response = requests.get('https://townhall.com/election/2016/president/{}/county'.format(state))
             soup = BeautifulSoup(response.text, 'html.parser')
             tables = soup.find_all('table', attrs={'class': 'table ec-table'})
 
@@ -187,16 +184,9 @@ def county_vote_extractor():
 
         state_county_counts = dict(zip(states, counts))
 
-        nested_states = (
-            [
-                [state] * county_count
-                for state, county_count
-                in state_county_counts.items()
-            ]
-        )
+        nested_states = [[state] * county_count for state, county_count in state_county_counts.items()]
 
-        states_column = [
-            state for sublist in nested_states for state in sublist]
+        states_column = [state for sublist in nested_states for state in sublist]
 
         return states_column
 
@@ -227,13 +217,7 @@ def county_vote_extractor():
     cols = ['CLINTON_COUNTY_VOTES', 'TRUMP_COUNTY_VOTES']
     df[cols] = df[cols].replace(',', '', regex=True).astype(int)
 
-    df['COUNTY'] = (
-        [
-            name[:-3] if name.endswith('Co.')
-            else name for name
-            in df['COUNTY']
-        ]
-    )
+    df['COUNTY'] = [name[:-3] if name.endswith('Co.') else name for name in df['COUNTY']]
 
     replacements = {
         'Sainte Genevieve': 'Ste. Genevieve',
@@ -241,15 +225,15 @@ def county_vote_extractor():
         'Charles City': 'Charles',
         'Colonial Heights': 'Colonial Heights Cit',
         'James City': 'James'
-    }  # JL: It's fine for readability to create a dict on multiple lines, but don't waste the lines for the open and closing curly brackets
+    } 
     df['COUNTY'] = df['COUNTY'].replace(replacements)
+    # Need to replace the following "cells" by their specific index locations.
     df.iat[1555, 0] = 'St Louis City'
     df.iat[2801, 0] = 'Bedford County'
     df.iat[2828, 0] = 'Fairfax City'
     df.iat[2829, 0] = 'Fairfax County'
     df.iat[2835, 0] = 'Franklin County'
     df.iat[2896, 0] = 'Richmond County'
-    # JL: could these have been done more programatically, e.g. by finding 2989 instead of specificying it manually, in case the data changes?
     df.iat[2898, 0] = 'Roanoke County'
 
     df['MATCH_ID'] = df['COUNTY'] + df['STATE']
