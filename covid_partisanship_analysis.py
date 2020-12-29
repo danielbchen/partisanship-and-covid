@@ -243,3 +243,71 @@ def county_vote_extractor():
                                     .str.replace("'", ''))
 
     return df
+
+
+def usda_extractor():
+    '''
+    Turns the raw data scraped from the USDA into a dataframe containing
+    FIPS codes, counties, and state abbreviations.
+    '''
+
+    raw_info = get_usda_raw_contents()
+
+    df = pd.DataFrame(
+        {
+            'FIPS': fips_column_creator('01001', '56045', 1),
+            'COUNTY': fips_column_creator('Autauga', 'Weston', 1),
+            'STATE': fips_column_creator('AL', 'AS', 0),
+        }
+    )
+
+    df['COUNTY'] = [name[:-4] if name.endswith('City') else name for name in df['COUNTY']]
+
+    df.at[1593, 'COUNTY'] = 'St Louis City'
+    df.at[2826, 'COUNTY'] = 'Bedford County'
+    df.at[2923, 'COUNTY'] = 'Fairfax City'
+    df.at[2845, 'COUNTY'] = 'Fairfax County'
+    df.at[2849, 'COUNTY'] = 'Franklin County'
+    df.at[2892, 'COUNTY'] = 'Richmond County'
+    df.at[2893, 'COUNTY'] = 'Roanoke County'
+
+    df['MATCH_ID'] = df['COUNTY'] + df['STATE']
+    df['MATCH_ID'] = [id.lower() for id in df['MATCH_ID']]
+    df['MATCH_ID'] = (df['MATCH_ID'].str.replace(' ', '')
+                                    .str.replace('.', ''))
+
+    df = df[['FIPS', 'MATCH_ID']]
+
+    return df
+
+
+def get_usda_raw_contents():
+    '''
+    Scrapes the USDA website and returns its raw html contents as a list of
+    text.
+    '''
+
+    fips_url = 'https://www.nrcs.usda.gov/wps/portal/nrcs/detail/national/home/?cid=nrcs143_013697'
+
+    response = requests.get(fips_url)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    cells = soup.find_all('td')
+    raw_info = [cell.get_text() for cell in cells]
+
+    return raw_info
+
+
+def fips_column_creator(first, last, offset):
+    '''
+    Using data from USDA, this function dentifies the index positions of all
+    FIPS codes, county names, and state abbreviations and extracts the data
+    for each of the aforementioned variables into a list.
+    '''
+
+    raw_info = get_usda_raw_contents()
+
+    first_item = raw_info.index(first)
+    last_item = raw_info.index(last) + offset
+    items = raw_info[first_item:last_item:3]
+
+    return items
