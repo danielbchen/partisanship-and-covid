@@ -369,7 +369,7 @@ def cases_loader():
     Stores case and death csv data from NYT's respository into dataframe.
     '''
 
-    cases_url = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
+    cases_url = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv'
     cases = pd.read_csv(cases_url)
 
     cases.columns = ['DATE', 'COUNTY', 'STATE', 'COUNTYFP', 'CASES', 'DEATHS']
