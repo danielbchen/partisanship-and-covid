@@ -500,3 +500,31 @@ def geo_data_cleaner(dataframe):
     df['COUNTYFP'] = df['COUNTYFP'].astype(int)
 
     return df
+
+
+def data_merger(dataframe1, dataframe2, dataframe3, dataframe4, dataframe5,
+                dataframe6):
+    '''
+    Merges all datasets, keeps relevant columns, and formats fips codes
+    correctly.
+    '''
+
+    df = (dataframe1.merge(dataframe2, on='STATE')
+                    .merge(dataframe3, on='COUNTYFP', how='inner')
+                    .merge(dataframe4, on='COUNTYFP', how='inner')
+                    .merge(dataframe5, on='COUNTYFP', how='inner')
+                    .merge(dataframe6, on='COUNTYFP', how='inner'))
+
+    df = df.drop(['CLINTON_VOTES', 'TRUMP_VOTES'], 1)
+
+    df['DEATH_RATE'] = df['DEATHS'] / df['CASES']
+
+    df['COUNTYFP'] = df['COUNTYFP'].astype(str)
+    df['COUNTYFP'] = ['0' + fips if len(fips) == 6 else fips for fips in df['COUNTYFP']]
+    df['COUNTYFP'] = [fips[:-2] for fips in df['COUNTYFP']]
+
+    df['INFECTION_RATE'] = (df['CASES'] / df['POP_EST_2019']) * 100
+
+    df = df[df['DATE'] <= '2020-12-01']
+
+    return df
