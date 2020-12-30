@@ -343,3 +343,22 @@ def county_fips_merger(dataframe1, dataframe2):
     df = df.append(oglala_lakota, ignore_index=True)
 
     return df
+
+
+def vote_margin_calculator(dataframe):
+    '''
+    Creates new column that reports the Clinton vote margin
+    as a percentage difference from Trump's vote share.
+    '''
+
+    df = dataframe.copy()
+
+    df['CLINTON_COUNTY_PCT'] = df['CLINTON_COUNTY_VOTES'] / (df['CLINTON_COUNTY_VOTES'] + df['TRUMP_COUNTY_VOTES'])
+
+    df['TRUMP_COUNTY_PCT'] = df['TRUMP_COUNTY_VOTES'] / (df['CLINTON_COUNTY_VOTES'] + df['TRUMP_COUNTY_VOTES'])
+
+    df['COUNTY_PCT_DIFF'] = df['CLINTON_COUNTY_PCT'] - df['TRUMP_COUNTY_PCT']
+
+    df = df[['COUNTYFP', 'COUNTY_PCT_DIFF']]
+
+    return df
