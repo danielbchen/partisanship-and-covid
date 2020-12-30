@@ -942,3 +942,48 @@ def df_to_gdf(dataframe):
     )
 
     return df
+
+
+def label_creator(dictionary):
+    '''
+    Returns the keys of a dictionary in reverse order.
+    Helper function to create categorial labels in GeoPandas choropleths.
+    '''
+
+    labels = [key for key, value in dictionary.items()]
+    labels = labels[::-1]
+
+    return labels
+
+
+def choropleth_plotter(dataframe, column, cmap, plot_title, legend_title,
+                       legend_labels, filename):
+    '''
+    Saves a choropleth as a .png.
+    '''
+
+    df = dataframe.copy()
+
+    fig, ax = plt.subplots(figsize=(17, 10))
+    df.plot(ax=ax,
+            column=column,
+            linewidth=0.5,
+            edgecolor='black',
+            categorical=True,
+            legend=True,
+            cmap=cmap,
+            legend_kwds=dict(title=legend_title,
+                             loc='upper left',
+                             bbox_to_anchor=(1, 1),
+                             frameon=False))
+
+    ax.axis('off')
+    ax.set_title(plot_title, fontsize=16, fontweight='bold')
+
+    leg = ax.get_legend()
+    for text, label in zip(leg.get_texts(), legend_labels):
+        text.set_text(label)
+
+    #plt.show;
+    plt.savefig(filename, dpi=800, facecolor='white')
+    plt.close()
