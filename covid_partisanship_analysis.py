@@ -1,10 +1,109 @@
 from bs4 import BeautifulSoup
+import datetime
+import geopandas as gpd
+from geopandas import GeoDataFrame
+import io
+import json
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+from matplotlib.dates import DateFormatter
 import numpy as np
 import operator
+import os
 import pandas as pd
 import requests
+import statsmodels.formula.api as smf
 import us
+import zipfile
 
+
+def main():
+    '''
+    Saves following files:
+
+    1) Total votes by state for Clinton and Trump in 2016.
+        (WEBSCRAPED VIA WIKIPEDIA.COM)
+    2) Total votes by county for Clinton and Trump in 2016.
+        (WEBSCRAPED VIA TOWNHALL.COM)
+    3) County names and their corresponding FIPS codes.
+        (WEBSCRAPED VIA USDA.COM)
+    4) Reported daily number of Coronavirus cases by county.
+        (ACCESSED VIA NYT GITHUB)
+    5) Population estimates in 2019 by county.
+        (ACCESSED VIA USDA)
+    6) Population density based on 2014-2018 American Community Survey.
+        (ACCESSED VIA CENSUS BUREAU)
+    7) Final dataframe that merges all of the files mentioned above.
+    8) Two subplots saved in a single .png showing:
+        a) Daily change in Coronavirus cases grouped by states who voted for
+           Clinton in 2016 and states who voted for Trump in 2016.
+        b) Daily change in Coronavirus cases grouped by regions in the
+           continential United States.
+    9) A choropleth showing the Coronavirus infection rate by county.
+    10) A choropleth showing how each county voted in 2016.
+    11) A choropleth showing the population density of each county.
+    12) A .txt file containing regression results where:
+        Total Cases ~ Party Identification + Population Density
+    13) A .txt file containing regression results where:
+        Infection Rate ~ Party Identification
+    '''
+
+    print('Running script, please wait about two minutes!')
+
+    votes = wiki_extractor()
+    votes = wiki_cleaner(votes)
+    votes = party_calculator(votes)
+
+    county_votes = county_vote_extractor()
+    fips = usda_extractor()
+    cases = cases_loader()
+    population = population_loader()
+    density = density_loader()
+
+    county_fips_combined = county_fips_merger(county_votes, fips)
+    county_fips_combined = vote_margin_calculator(county_fips_combined)
+
+    geo = geo_data_loader()
+    geo = geo_data_cleaner(geo)
+
+    df = data_merger(cases, votes, population, density,
+                     county_fips_combined, geo)
+
+    df = bin_creator(df)
+    df = region_grouper(df)
+
+    votes.to_csv('Votes by State in 2016.csv')
+    county_votes.to_csv('Votes by County in 2016.csv')
+    fips.to_csv('FIPS codes.csv')
+    cases.to_csv('Reported Daily Coronavirus Cases.csv')
+    population.to_csv('Poplation Estimates 2019.csv')
+    density.to_csv('Population Density Estimates.csv')
+
+    drop_cols = [
+        'COUNTYNS',
+        'AFFGEOID',
+        'GEOID',
+        'NAME',
+        'LSAD',
+        'ALAND',
+        'AWATER',
+        'GEOMETRY',
+        'INFECTION_BINS',
+        'DENSITY_BINS',
+        'VOTE_BINS',
+        'REGION'
+    ]
+    df.drop(drop_cols, 1).to_csv('Final Dataframe.csv', index=False)
+
+    plotter(df)
+    choropleth_infection(df)
+    choropleth_vote(df)
+    choropleth_density(df)
+
+    run_ols(df)
+
+    print('The files have been saved!')
+    
 
 def wiki_extractor():
     '''
@@ -1107,3 +1206,7 @@ def run_ols(dataframe):
     for name, output in ols_dict.items():
         with open('{}.txt'.format(name), 'w') as file:
             file.write(output.as_text())
+
+
+if __name__ == '__main__':
+    main()
