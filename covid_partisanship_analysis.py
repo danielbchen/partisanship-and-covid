@@ -1080,3 +1080,30 @@ def choropleth_vote(dataframe):
                        legend_title=leg_title,
                        legend_labels=vote_labels,
                        filename='Vote Choropleth.png')
+
+
+def run_ols(dataframe):
+    '''
+    Takes dataframe, runs two regressions, and writes each regression
+    output into a .txt file.
+    '''
+
+    df = dataframe.copy()
+
+    df = df[df['DATE'] == '2020-12-01']
+    df['BINARY_PARTY_ID'] = [1 if pct > 0 else 0 for pct in df['COUNTY_PCT_DIFF']]
+
+    cases_formula = 'CASES ~ BINARY_PARTY_ID + POP_EST_2019'
+    rate_formula = 'INFECTION_RATE ~ BINARY_PARTY_ID'
+    formulas = [cases_formula, rate_formula]
+
+    models = [smf.ols(formula=formula, data=df).fit() for formula in formulas]
+    summaries = [model.summary() for model in models]
+
+    output_names = ['Total Cases Regression', 'Infection Rate Regression']
+
+    ols_dict = dict(zip(output_names, summaries))
+
+    for name, output in ols_dict.items():
+        with open('{}.txt'.format(name), 'w') as file:
+            file.write(output.as_text())
