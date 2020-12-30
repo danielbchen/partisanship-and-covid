@@ -1,0 +1,28 @@
+                            OLS Regression Results                            
+==============================================================================
+Dep. Variable:                  CASES   R-squared:                       0.905
+Model:                            OLS   Adj. R-squared:                  0.905
+Method:                 Least Squares   F-statistic:                 1.471e+04
+Date:                Wed, 30 Dec 2020   Prob (F-statistic):               0.00
+Time:                        16:28:46   Log-Likelihood:                -30453.
+No. Observations:                3099   AIC:                         6.091e+04
+Df Residuals:                    3096   BIC:                         6.093e+04
+Df Model:                           2                                         
+Covariance Type:            nonrobust                                         
+===================================================================================
+                      coef    std err          t      P>|t|      [0.025      0.975]
+-----------------------------------------------------------------------------------
+Intercept          60.9783     88.778      0.687      0.492    -113.092     235.048
+BINARY_PARTY_ID  -822.4419    236.230     -3.482      0.001   -1285.624    -359.259
+POP_EST_2019        0.0424      0.000    163.442      0.000       0.042       0.043
+==============================================================================
+Omnibus:                     4302.771   Durbin-Watson:                   1.668
+Prob(Omnibus):                  0.000   Jarque-Bera (JB):          7791045.208
+Skew:                           7.175   Prob(JB):                         0.00
+Kurtosis:                     248.217   Cond. No.                     1.01e+06
+==============================================================================
+
+Warnings:
+[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+[2] The condition number is large, 1.01e+06. This might indicate that there are
+strong multicollinearity or other numerical problems.

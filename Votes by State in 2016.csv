@@ -1,0 +1,52 @@
+,STATE,CLINTON_VOTES,TRUMP_VOTES,PARTY_ID
+0,Alabama,729547,1318255,Republican
+1,Alaska,116454,163387,Republican
+2,Arizona,1161167,1252401,Republican
+3,Arkansas,380494,684872,Republican
+4,California,8753788,4483810,Democratic
+5,Colorado,1338870,1202484,Democratic
+6,Connecticut,897572,673215,Democratic
+7,Delaware,235603,185127,Democratic
+8,DC,282830,12723,Democratic
+9,Florida,4504975,4617886,Republican
+10,Georgia,1877963,2089104,Republican
+11,Hawaii,266891,128847,Democratic
+12,Idaho,189765,409055,Republican
+13,Illinois,3090729,2146015,Democratic
+14,Indiana,1033126,1557286,Republican
+15,Iowa,653669,800983,Republican
+16,Kansas,427005,671018,Republican
+17,Kentucky,628854,1202971,Republican
+18,Louisiana,780154,1178638,Republican
+19,Maine,357735,335593,Democratic
+20,Maryland,1677928,943169,Democratic
+21,Massachusetts,1995196,1090893,Democratic
+22,Michigan,2268839,2279543,Republican
+23,Minnesota,1367716,1322951,Democratic
+24,Mississippi,485131,700714,Republican
+25,Missouri,1071068,1594511,Republican
+26,Montana,177709,279240,Republican
+27,Nebraska,284494,495961,Republican
+28,Nevada,539260,512058,Democratic
+29,New Hampshire,348526,345790,Democratic
+30,New Jersey,2148278,1601933,Democratic
+31,New Mexico,385234,319667,Democratic
+32,New York,4556124,2819534,Democratic
+33,North Carolina,2189316,2362631,Republican
+34,North Dakota,93758,216794,Republican
+35,Ohio,2394164,2841005,Republican
+36,Oklahoma,420375,949136,Republican
+37,Oregon,1002106,782403,Democratic
+38,Pennsylvania,2926441,2970733,Republican
+39,Rhode Island,252525,180543,Democratic
+40,South Carolina,855373,1155389,Republican
+41,South Dakota,117458,227721,Republican
+42,Tennessee,870695,1522925,Republican
+43,Texas,3877868,4685047,Republican
+44,Utah,310676,515231,Republican
+45,Vermont,178573,95369,Democratic
+46,Virginia,1981473,1769443,Democratic
+47,Washington,1742718,1221747,Democratic
+48,West Virginia,188794,489371,Republican
+49,Wisconsin,1382536,1405284,Republican
+50,Wyoming,55973,174419,Republican
