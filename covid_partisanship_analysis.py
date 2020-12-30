@@ -987,3 +987,96 @@ def choropleth_plotter(dataframe, column, cmap, plot_title, legend_title,
     #plt.show;
     plt.savefig(filename, dpi=800, facecolor='white')
     plt.close()
+
+
+def choropleth_infection(dataframe):
+    '''
+    Saves a choropleth of the infection rate across the continential U.S.
+    '''
+
+    df = dataframe.copy()
+    df = df[df['DATE'] == '2020-12-01']
+    df = df_to_gdf(df)
+
+    infection_rankings = {
+        '5 +': 5,
+        '4 to 5': 4,
+        '3 to 4': 3,
+        '2 to 3': 2,
+        '1 to 2': 1,
+        'Less than 1': 0
+    }
+    infection_labels = label_creator(infection_rankings)
+
+    df['INFECTION_RANKINGS'] = df['INFECTION_BINS'].map(infection_rankings)
+
+    choropleth_plotter(dataframe=df,
+                       column='INFECTION_RANKINGS',
+                       cmap='RdBu_r',
+                       plot_title='COVID-19 Infection Rate as of December 1, 2020',
+                       legend_title='Infection Rate (%)',
+                       legend_labels=infection_labels,
+                       filename='Infection Choropleth.png')
+
+
+def choropleth_density(dataframe):
+    '''
+    Saves a choropleth of the population density across the continential U.S.
+    '''
+
+    df = dataframe.copy()
+    df = df[df['DATE'] == '2020-12-01']
+    df = df_to_gdf(df)
+
+    density_rankings = {
+        '500 +': 5,
+        '250 to 500': 4,
+        '80 to 250': 3,
+        '20 to 80': 2,
+        '1 to 20': 1,
+        'Less than 1': 0
+    }
+    density_labels = label_creator(density_rankings)
+
+    df['DENSITY_RANKINGS'] = df['DENSITY_BINS'].map(density_rankings)
+
+    choropleth_plotter(dataframe=df,
+                       column='DENSITY_RANKINGS',
+                       cmap='RdBu_r',
+                       plot_title='Population Density 2019',
+                       legend_title='People per Square KM',
+                       legend_labels=density_labels,
+                       filename='Density Choropleth.png')
+
+
+def choropleth_vote(dataframe):
+    '''
+    Saves a choropleth of 2016 Clinton Vote Margin across the continential U.S.
+    '''
+
+    df = dataframe.copy()
+    df = df[df['DATE'] == '2020-12-01']
+    df = df_to_gdf(df)
+
+    vote_rankings = {
+        '0.66 to 0.99': 5,
+        '0.33 to 0.66': 4,
+        '0 to 0.33': 3,
+        '-0.33 to 0': 2,
+        '-0.66 to -0.33': 1,
+        '-0.99 to -0.66': 0
+    }
+    vote_labels = label_creator(vote_rankings)
+
+    df['VOTE_RANKINGS'] = df['VOTE_BINS'].map(vote_rankings)
+
+    leg_title = ('         Clinton 2016 Margin'
+                 '\n(Percent Difference vs. Trump)')
+
+    choropleth_plotter(dataframe=df,
+                       column='VOTE_RANKINGS',
+                       cmap='RdBu',
+                       plot_title='2016 Clinton Vote Margin',
+                       legend_title=leg_title,
+                       legend_labels=vote_labels,
+                       filename='Vote Choropleth.png')
