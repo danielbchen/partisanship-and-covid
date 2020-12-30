@@ -676,3 +676,253 @@ def region_grouper(dataframe):
     df['REGION'] = np.select(region_conditions, region_groups)
 
     return df
+
+
+def default_graph(ax):
+    '''
+    Creates standard format for all subplots.
+    '''
+
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_linewidth(2)
+
+    ax.yaxis.set_ticks_position('left')
+    ax.xaxis.set_ticks_position('bottom')
+    ax.tick_params(axis=u'both', which=u'both', length=0)
+
+    ax.margins(x=0, y=0)
+
+    return ax
+
+
+def plotter(dataframe):
+    '''
+    Creates two plots. First, the daily change in Coronavirus cases over time
+    between states who voted for Clinton in 2016 and states who voted for
+    Trump in 2016. Second, the daily change in Coronavirus cases over time
+    in different regions of the United States.
+    '''
+
+    df = dataframe.copy()
+
+    df = df[df['DATE'] <= '2020-12-01']
+
+    df['DATE'] = pd.to_datetime(df['DATE'])
+    grouped_df = (df.groupby(['DATE', 'PARTY_ID'])
+                    .agg({'CASES': 'sum', 'DEATH_RATE': 'mean'})
+                    .reset_index())
+
+    '''
+    Calculates daily new cases for first subplot.
+    '''
+    grouped_cases = (grouped_df.pivot(index='DATE',
+                                      columns='PARTY_ID',
+                                      values='CASES')
+                     .reset_index())
+    grouped_cases['DATE'] = pd.to_datetime(grouped_cases['DATE'])
+    grouped_cases['DEM_NEW_CASES'] = grouped_cases['Democratic'].diff(1)
+    grouped_cases['GOP_NEW_CASES'] = grouped_cases['Republican'].diff(1)
+
+    '''
+    Calculates new daily cases by region for second subplot.
+    '''
+    regions_df = (df.groupby(['DATE', 'REGION'])
+                    .agg({'CASES': 'sum'})
+                    .reset_index()
+                    .pivot(index='DATE',
+                           columns='REGION',
+                           values='CASES')
+                    .reset_index())
+
+    regions_df['DATE'] = pd.to_datetime(regions_df['DATE'])
+    regions_df['MW_NEW_CASES'] = regions_df['Midwest'].diff(1)
+    regions_df['NE_NEW_CASES'] = regions_df['Northeast'].diff(1)
+    regions_df['S_NEW_CASES'] = regions_df['South'].diff(1)
+    regions_df['W_NEW_CASES'] = regions_df['West'].diff(1)
+
+    '''
+    Plots dataframes.
+    '''
+    fig, axs = plt.subplots(2, 1, figsize=(15, 10))
+
+    plt.rcParams['font.family'] = 'arial'
+
+    axs = [default_graph(ax) for ax in axs]
+
+    '''
+    Plot first subplot.
+    '''
+    axs[0].fill_between(grouped_cases['DATE'],
+                        grouped_cases['DEM_NEW_CASES'],
+                        color='skyblue',
+                        alpha=0.4)
+    axs[0].plot(grouped_cases['DATE'],
+                grouped_cases['DEM_NEW_CASES'],
+                color='blue',
+                alpha=.6,
+                linewidth=2,
+                label='Voted Clinton in 2016')
+    axs[0].fill_between(grouped_cases['DATE'],
+                        grouped_cases['GOP_NEW_CASES'],
+                        color='lightpink',
+                        alpha=0.4)
+    axs[0].plot(grouped_cases['DATE'],
+                grouped_cases['GOP_NEW_CASES'],
+                color='red',
+                alpha=.6,
+                linewidth=2,
+                label='Voted Trump in 2016')
+
+    axs[0].xaxis.set_ticklabels([], minor=True)
+    axs[0].xaxis.set_ticklabels([], minor=False)
+
+    axs[0].yaxis.get_offset_text().set_visible(False)
+
+    flag_height_tall = 121000
+    flag_height_short = 110000
+
+    axs[0].axvline(datetime.datetime(2020, 2, 3), color='k', linestyle=':')
+    axs[0].text(datetime.datetime(2020, 2, 4),
+                flag_height_tall,
+                'US Declares Public \nHealth Emergency',
+                horizontalalignment='left',
+                style='italic',
+                fontsize=9)
+    axs[0].axvline(datetime.datetime(2020, 3, 13), color='k', linestyle=':')
+    axs[0].text(datetime.datetime(2020, 3, 14),
+                flag_height_tall,
+                'Trump Declares \nNational Emergency',
+                horizontalalignment='left',
+                style='italic',
+                fontsize=9)
+    axs[0].axvline(datetime.datetime(2020, 5, 26), color='k', linestyle=':')
+    axs[0].text(datetime.datetime(2020, 5, 27),
+                flag_height_tall,
+                'George Floyd \nProtests Begin',
+                horizontalalignment='left',
+                style='italic',
+                fontsize=9)
+    axs[0].axvline(datetime.datetime(2020, 7, 4), color='k', linestyle=':')
+    axs[0].text(datetime.datetime(2020, 7, 5),
+                125500,
+                'Fourth of July',
+                horizontalalignment='left',
+                style='italic',
+                fontsize=9)
+    axs[0].axvline(datetime.datetime(2020, 9, 7), color='k', linestyle=':')
+    axs[0].text(datetime.datetime(2020, 9, 8),
+                flag_height_tall,
+                ' Labor Day \nWeekend',
+                horizontalalignment='left',
+                style='italic',
+                fontsize=9)
+    axs[0].axvline(datetime.datetime(2020, 10, 3), color='k', linestyle=':')
+    axs[0].text(datetime.datetime(2020, 10, 4),
+                flag_height_short,
+                'White House \nCeremony \nfor Amy \nBarrett',
+                horizontalalignment='left',
+                style='italic',
+                fontsize=9)
+    axs[0].axvline(datetime.datetime(2020, 10, 31), color='k', linestyle=':')
+    axs[0].text(datetime.datetime(2020, 11, 1),
+                127000,
+                'Halloween (10/31) and \nElection Day \n(11/03)',
+                horizontalalignment='left',
+                style='italic',
+                fontsize=9)
+    axs[0].axvline(datetime.datetime(2020, 11, 26), color='k', linestyle=':')
+    axs[0].text(datetime.datetime(2020, 11, 28),
+                125500,
+                'Thanksgiving',
+                horizontalalignment='left',
+                style='italic',
+                fontsize=9)
+
+    axs[0].set_xlim(['2020-01-21', '2020-12-01'])
+
+    axs[0].spines['bottom'].set_linewidth(2)
+
+    axs[0].set_title('Cases by 2016 Presidential Vote \n\n')
+
+    axs[0].legend(loc=(1.03, .5), framealpha=0)
+
+    '''
+    Plot second subplot.
+    '''
+    axs[1] = plt.gca()
+    axs[1].fill_between(regions_df['DATE'],
+                        regions_df['MW_NEW_CASES'],
+                        color='#66c2a5',
+                        alpha=0.4)
+    axs[1].plot(regions_df['DATE'],
+                regions_df['MW_NEW_CASES'],
+                color='#47887e',
+                alpha=.6,
+                linewidth=2,
+                label='Midwest')
+    axs[1].fill_between(regions_df['DATE'],
+                        regions_df['NE_NEW_CASES'],
+                        color='#ffc9b1',
+                        alpha=0.4)
+    axs[1].plot(regions_df['DATE'],
+                regions_df['NE_NEW_CASES'],
+                color='#fc8d62',
+                alpha=.6,
+                linewidth=2,
+                label='Northeast')
+    axs[1].fill_between(regions_df['DATE'],
+                        regions_df['S_NEW_CASES'],
+                        color='#bfdffb',
+                        alpha=0.4)
+    axs[1].plot(regions_df['DATE'],
+                regions_df['S_NEW_CASES'],
+                color='#8da0cb',
+                alpha=.6,
+                linewidth=2,
+                label='South')
+    axs[1].fill_between(regions_df['DATE'],
+                        regions_df['W_NEW_CASES'],
+                        color='#ffe5fb',
+                        alpha=0.4)
+    axs[1].plot(regions_df['DATE'],
+                regions_df['W_NEW_CASES'],
+                color='#e78ac3',
+                alpha=.6,
+                linewidth=2,
+                label='West')
+
+    axs[1].axvline(datetime.datetime(2020, 2, 3), color='k', linestyle=':')
+    axs[1].axvline(datetime.datetime(2020, 3, 13), color='k', linestyle=':')
+    axs[1].axvline(datetime.datetime(2020, 5, 26), color='k', linestyle=':')
+    axs[1].axvline(datetime.datetime(2020, 7, 4), color='k', linestyle=':')
+    axs[1].axvline(datetime.datetime(2020, 9, 7), color='k', linestyle=':')
+    axs[1].axvline(datetime.datetime(2020, 10, 3), color='k', linestyle=':')
+    axs[1].axvline(datetime.datetime(2020, 10, 31), color='k', linestyle=':')
+    axs[1].axvline(datetime.datetime(2020, 11, 26), color='k', linestyle=':')
+
+    axs[1].axhline(0, color='k', linestyle='-')
+    axs[1].spines['bottom'].set_visible(False)
+
+    axs[1].set_xlim(['2020-01-21', '2020-12-01'])
+    xfmt = mdates.DateFormatter('%b')
+    months = mdates.MonthLocator()
+    axs[1].xaxis.set_major_locator(months)
+    axs[1].xaxis.set_major_formatter(xfmt)
+
+    axs[1].set_title('Cases by Geographic Region \n')
+
+    axs[1].legend(loc=(1.03, .5), framealpha=0)
+
+    fig.suptitle('Tracking Coronavirus Cases in the United States',
+                 fontsize=15, fontweight='bold',
+                 x=.445, y=.97)
+    fig.text(0.08, 0.5,
+             'Change in Reported Number of Cases',
+             ha="center", va="center", rotation=90)
+
+    fig.subplots_adjust(right=.78)
+
+    #plt.show;
+    plt.savefig('Lineplots.png', dpi=800, facecolor='white')
+    plt.close()
