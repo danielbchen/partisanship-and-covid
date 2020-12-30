@@ -1,6 +1,6 @@
 # Analysis of Political Partisanship and the Coronavirus in the United States
 
-1. Essential Question 
+### 1. Essential Question
 
 Hyper-partisanship has inevitably invaded public health in the United States. While Coronavirus cases continue to surge across the country with no end in sight, party loyalty has divided the nation into those who trust public health experts and those who follow the advice of party leaders.
 
