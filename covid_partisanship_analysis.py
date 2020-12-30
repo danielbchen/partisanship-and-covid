@@ -311,3 +311,35 @@ def fips_column_creator(first, last, offset):
     items = raw_info[first_item:last_item:3]
 
     return items
+
+
+def county_fips_merger(dataframe1, dataframe2):
+    '''
+    Merges FIPS code data from USDA with votes by county data from
+    townhall.com.
+    '''
+
+    df = pd.merge(dataframe1, dataframe2, on='MATCH_ID')
+
+    df.iat[223, 5] = '08017'
+    df.iat[1166, 5] = '24510'
+    df.iat[1167, 5] = '24005'
+    df.iat[2383, 5] = '46111'
+    df.iat[2385, 5] = '46117'
+
+    df = df[df['COUNTY'] != 'Alaska']
+
+    df = df[['FIPS', 'CLINTON_COUNTY_VOTES', 'TRUMP_COUNTY_VOTES']]
+    df.columns = ['COUNTYFP', 'CLINTON_COUNTY_VOTES', 'TRUMP_COUNTY_VOTES']
+
+    df['COUNTYFP'] = df['COUNTYFP'].astype(int)
+
+    # Need to add county oglala lakota manually because it's not included in the usda website
+    oglala_lakota = {
+        'COUNTYFP': 46102,
+        'CLINTON_COUNTY_VOTES': 2504,
+        'TRUMP_COUNTY_VOTES': 241
+    }
+    df = df.append(oglala_lakota, ignore_index=True)
+
+    return df
