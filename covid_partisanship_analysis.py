@@ -926,3 +926,19 @@ def plotter(dataframe):
     #plt.show;
     plt.savefig('Lineplots.png', dpi=800, facecolor='white')
     plt.close()
+
+
+def df_to_gdf(dataframe):
+    '''
+    Converts a normal pandas dataframe into a geopandas dataframe.
+    '''
+
+    df = dataframe.copy()
+
+    df = GeoDataFrame(
+        df,
+        crs='+proj=laea +lat_0=30 +lon_0=-95',
+        geometry=df['GEOMETRY']
+    )
+
+    return df
