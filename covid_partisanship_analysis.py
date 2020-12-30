@@ -528,3 +528,151 @@ def data_merger(dataframe1, dataframe2, dataframe3, dataframe4, dataframe5,
     df = df[df['DATE'] <= '2020-12-01']
 
     return df
+
+
+def bin_creator(dataframe):
+    '''
+    Creates bins for continuous variables that will be used for choropleths.
+    '''
+
+    df = dataframe.copy()
+
+    infection_conditions = [
+        df['INFECTION_RATE'] < 1,
+        ((df['INFECTION_RATE'] >= 1) & (df['INFECTION_RATE'] < 2)),
+        ((df['INFECTION_RATE'] >= 2) & (df['INFECTION_RATE'] < 3)),
+        ((df['INFECTION_RATE'] >= 3) & (df['INFECTION_RATE'] < 4)),
+        ((df['INFECTION_RATE'] >= 4) & (df['INFECTION_RATE'] < 5)),
+        df['INFECTION_RATE'] >= 5
+    ]
+    infection_groups = [
+        'Less than 1',
+        '1 to 2',
+        '2 to 3',
+        '3 to 4',
+        '4 to 5',
+        '5 +'
+    ]
+    df['INFECTION_BINS'] = np.select(infection_conditions, infection_groups)
+
+    density_conditions = [
+        df['POP_DENSITY'] < 1,
+        ((df['POP_DENSITY'] >= 1) & (df['POP_DENSITY'] < 20)),
+        ((df['POP_DENSITY'] >= 20) & (df['POP_DENSITY'] < 80)),
+        ((df['POP_DENSITY'] >= 80) & (df['POP_DENSITY'] < 250)),
+        ((df['POP_DENSITY'] >= 250) & (df['POP_DENSITY'] < 500)),
+        df['POP_DENSITY'] >= 500
+    ]
+    density_groups = [
+        'Less than 1',
+        '1 to 20',
+        '20 to 80',
+        '80 to 250',
+        '250 to 500',
+        '500 +'
+    ]
+    df['DENSITY_BINS'] = np.select(density_conditions, density_groups)
+
+    vote_conditions = [
+        ((df['COUNTY_PCT_DIFF'] >= -.99) & (df['COUNTY_PCT_DIFF'] < -.66)),
+        ((df['COUNTY_PCT_DIFF'] >= -.66) & (df['COUNTY_PCT_DIFF'] < -.33)),
+        ((df['COUNTY_PCT_DIFF'] >= -.33) & (df['COUNTY_PCT_DIFF'] < 0)),
+        ((df['COUNTY_PCT_DIFF'] >= 0) & (df['COUNTY_PCT_DIFF'] < .33)),
+        ((df['COUNTY_PCT_DIFF'] >= .33) & (df['COUNTY_PCT_DIFF'] < .66)),
+        ((df['COUNTY_PCT_DIFF'] >= .66) & (df['COUNTY_PCT_DIFF'] < .99))
+    ]
+    vote_groups = [
+        '-0.99 to -0.66',
+        '-0.66 to -0.33',
+        '-0.33 to 0',
+        '0 to 0.33',
+        '0.33 to 0.66',
+        '0.66 to 0.99'
+    ]
+    df['VOTE_BINS'] = np.select(vote_conditions, vote_groups)
+
+    return df
+
+
+def region_grouper(dataframe):
+    '''
+    Creates a new column that puts states into regional bins.
+    '''
+
+    df = dataframe.copy()
+
+    north_east_regions = [
+        'Connecticut',
+        'Maine',
+        'Massachusetts',
+        'New Hampshire',
+        'New Jersey',
+        'New York',
+        'Pennsylvania',
+        'Rhode Island',
+        'Vermont'
+    ]
+
+    southern_regions = [
+        'Alabama',
+        'Arkansas',
+        'Delaware',
+        'Florida',
+        'Georgia',
+        'Kentucky',
+        'Louisiana',
+        'Maryland',
+        'Mississippi',
+        'North Carolina',
+        'Oklahoma',
+        'South Carolina',
+        'Tennessee',
+        'Texas',
+        'Virginia',
+        'West Virginia'
+    ]
+
+    midwest_regions = [
+        'Illinois',
+        'Indiana',
+        'Iowa',
+        'Kansas',
+        'Michigan',
+        'Minnesota',
+        'Missouri',
+        'Nebraska',
+        'North Dakota',
+        'Ohio',
+        'South Dakota',
+        'Wisconsin'
+    ]
+
+    western_regions = [
+        'Alaska',
+        'Arizona',
+        'California',
+        'Colorado',
+        'Hawaii',
+        'Idaho',
+        'Montana',
+        'Nevada',
+        'New Mexico',
+        'Oregon',
+        'Utah',
+        'Washington',
+        'Wyoming'
+    ]
+
+    regions = [
+        north_east_regions,
+        southern_regions,
+        midwest_regions,
+        western_regions
+    ]
+
+    region_conditions = [df['STATE'].isin(region) for region in regions]
+    region_groups = ['Northeast', 'South', 'Midwest', 'West']
+
+    df['REGION'] = np.select(region_conditions, region_groups)
+
+    return df
