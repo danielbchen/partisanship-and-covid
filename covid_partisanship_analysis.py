@@ -362,3 +362,53 @@ def vote_margin_calculator(dataframe):
     df = df[['COUNTYFP', 'COUNTY_PCT_DIFF']]
 
     return df
+
+
+def cases_loader():
+    '''
+    Stores case and death csv data from NYT's respository into dataframe.
+    '''
+
+    cases_url = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv')
+    cases = pd.read_csv(cases_url)
+
+    cases.columns = ['DATE', 'COUNTY', 'STATE', 'COUNTYFP', 'CASES', 'DEATHS']
+
+    return cases
+
+
+def population_loader():
+    '''
+    Returns a dataframe with population estimates from 2019 in each US County
+    using USDA data.
+    '''
+
+    url = 'https://www.ers.usda.gov/webdocs/DataFiles/48747/PopulationEstimates.xls?v=6825.4'
+
+    cols = ['FIPStxt', 'POP_ESTIMATE_2019']
+    df = pd.read_excel(
+        url,
+        skiprows=range(0, 2),
+        usecols=cols,
+    )
+
+    df.columns = ['COUNTYFP', 'POP_EST_2019']
+
+    return df
+
+
+def density_loader():
+    '''
+    Loads population density by county from the U.S. Census into a dataframe.
+    '''
+
+    density_url = 'https://opendata.arcgis.com/datasets/21843f238cbb46b08615fc53e19e0daf_1.geojson'
+
+    df = gpd.read_file(density_url)
+
+    df = df[['GEOID', 'B01001_calc_PopDensity']]
+
+    df['GEOID'] = df['GEOID'].astype(float)
+    df.columns = ['COUNTYFP', 'POP_DENSITY']
+
+    return df
