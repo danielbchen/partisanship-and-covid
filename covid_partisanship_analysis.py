@@ -412,3 +412,91 @@ def density_loader():
     df.columns = ['COUNTYFP', 'POP_DENSITY']
 
     return df
+
+
+def get_shape_files():
+    '''
+    Checks directory for necessary shape files. If files are not there, then
+    they are downloaded from the Census. Returns the path to the .dbf file
+    that is read by GeoPandas. If files are there, nothing is downloaded and
+    only a statement saying files exist is returned.
+    '''
+
+    path = os.path.dirname(os.path.abspath("__file__"))
+
+    fnames = [
+        'cb_2018_us_county_500k.cpg',
+        'cb_2018_us_county_500k.prj',
+        'cb_2018_us_county_500k.dbf',
+        'cb_2018_us_county_500k.shx',
+        'cb_2018_us_county_500k.shp',
+        'cb_2018_us_county_500k.shp.iso.xml',
+        'cb_2018_us_county_500k.shp.ea.iso.xml'
+    ]
+    booleans = [os.path.exists(fname) for fname in fnames]
+
+    url = 'https://www2.census.gov/geo/tiger/GENZ2018/shp/cb_2018_us_county_500k.zip'
+
+    if False in booleans:
+        response = requests.get(url)
+        zip_folder = zipfile.ZipFile(io.BytesIO(response.content))
+        zip_folder.extractall(path=path)
+        file_endings = ['dbf', 'prj', 'shp', 'shx']
+        files = [file for file in zip_folder.namelist() if file.endswith(tuple(file_endings))]
+        dbf, prj, shp, shx = [file for file in files]
+        shp_path = os.path.join(path, shp)
+    else:
+        shp_path = 'Files already exist!'
+
+    return shp_path
+
+
+def geo_data_loader():
+    '''
+    Uses the shape files are either downloaded or already exist on the machine
+    to return a dataframe containing all the info required to create a map.
+    '''
+
+    path = os.path.dirname(os.path.abspath("__file__"))
+    file_path = get_shape_files()
+
+    if file_path == 'Files already exist!':
+        fname = os.path.join(path, 'cb_2018_us_county_500k.dbf')
+        df = gpd.read_file(fname)
+    else:
+        df = gpd.read_file(file_path)
+
+    return df
+
+
+def geo_data_cleaner(dataframe):
+    '''
+    Cleans up the GeoDataFrame so that it can be merged with the vote data
+    and the COVID-19 case data.
+    '''
+
+    df = dataframe.copy()
+
+    drop_counties = ['02', '15', '72']
+    df = df[~df['STATEFP'].isin(drop_counties)]
+
+    projection = '+proj=laea +lat_0=30 +lon_0=-95'
+    df = df.to_crs(projection)
+
+    df['COUNTYFP'] = df['STATEFP'] + df['COUNTYFP']
+
+    df = df[[
+        'COUNTYFP',
+        'COUNTYNS',
+        'AFFGEOID',
+        'GEOID',
+        'NAME',
+        'LSAD',
+        'ALAND',
+        'AWATER',
+        'geometry'
+    ]]
+    df.columns = [col.upper() for col in df.columns.values.tolist()]
+    df['COUNTYFP'] = df['COUNTYFP'].astype(int)
+
+    return df
