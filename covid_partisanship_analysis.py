@@ -106,10 +106,9 @@ def main():
     
 
 def wiki_extractor():
-    '''
-    Scrapes wikipedia table to return a dataframe with the Clinton versus
+    """Scrapes wikipedia table to return a dataframe with the Clinton versus
     Trump vote counts from 2016.
-    '''
+    """
 
     url = 'https://en.wikipedia.org/wiki/2016_United_States_presidential_election'
 
@@ -156,10 +155,9 @@ def wiki_extractor():
 
 
 def wiki_cleaner(dataframe):
-    '''
-    Extracts only the name of the state from hyperlinks in the State column,
+    """Extracts only the name of the state from hyperlinks in the State column,
     and cleans up vote counts to manipulatable numeric format.
-    '''
+    """
 
     df = dataframe.copy()
 
@@ -180,10 +178,9 @@ def wiki_cleaner(dataframe):
 
 
 def party_calculator(dataframe):
-    '''
-    Creates new column based on scraped Wikipedia data determining if a
+    """Creates new column based on scraped Wikipedia data determining if a
     given state is red or blue.
-    '''
+    """
 
     df = dataframe.copy()
 
@@ -197,9 +194,7 @@ def party_calculator(dataframe):
 
 
 def get_states():
-    '''
-    Returns a list of state abbreviations + District of Columbia.
-    '''
+    """Returns a list of state abbreviations + District of Columbia."""
 
     fips_state_xwalk = us.states.mapping('fips', 'abbr')
 
@@ -220,17 +215,15 @@ def get_states():
 
 
 def county_vote_extractor():
-    '''
-    Turns the raw html text from townhall.com into a dataframe containing
+    """Turns the raw html text from townhall.com into a dataframe containing
     vote counts by candidate by county. Cleans up number formatting and
     creates new column that will be used to join on FIPS codes.
-    '''
+    """
 
     def get_townhall_raw_contents():
-        '''
-        Loops through townhall.com for each state and returns the raw
+        """Loops through townhall.com for each state and returns the raw
         html text on each page into a list.
-        '''
+        """
 
         states = get_states()
 
@@ -252,10 +245,9 @@ def county_vote_extractor():
     raw_text = get_townhall_raw_contents()
 
     def county_names_retriever():
-        '''
-        Extracts and cleans county names from the list containing the raw html
-        output.
-        '''
+        """Extracts and cleans county names from the list containing the raw 
+        html output.
+        """
 
         county_names = [item for item in raw_text if item.startswith('\n')]
         county_names = [text.split('\n')[1] for text in county_names]
@@ -263,9 +255,7 @@ def county_vote_extractor():
         return county_names
 
     def state_extractor():
-        '''
-        Returns a list of states that correspond to each county.
-        '''
+        """Returns a list of states that correspond to each county."""
 
         states = get_states()
 
@@ -290,10 +280,9 @@ def county_vote_extractor():
         return states_column
 
     def vote_getter(candidate_name):
-        '''
-        Stores the vote count from each county for a specified candidate
+        """Stores the vote count from each county for a specified candidate
         into a list.
-        '''
+        """
 
         vote_indexes = []
         for index, text in enumerate(raw_text):
@@ -345,10 +334,9 @@ def county_vote_extractor():
 
 
 def usda_extractor():
-    '''
-    Turns the raw data scraped from the USDA into a dataframe containing
+    """Turns the raw data scraped from the USDA into a dataframe containing
     FIPS codes, counties, and state abbreviations.
-    '''
+    """
 
     raw_info = get_usda_raw_contents()
 
@@ -381,10 +369,9 @@ def usda_extractor():
 
 
 def get_usda_raw_contents():
-    '''
-    Scrapes the USDA website and returns its raw html contents as a list of
+    """Scrapes the USDA website and returns its raw html contents as a list of
     text.
-    '''
+    """
 
     fips_url = 'https://www.nrcs.usda.gov/wps/portal/nrcs/detail/national/home/?cid=nrcs143_013697'
 
@@ -397,11 +384,10 @@ def get_usda_raw_contents():
 
 
 def fips_column_creator(first, last, offset):
-    '''
-    Using data from USDA, this function dentifies the index positions of all
+    """Using data from USDA, this function dentifies the index positions of all
     FIPS codes, county names, and state abbreviations and extracts the data
     for each of the aforementioned variables into a list.
-    '''
+    """
 
     raw_info = get_usda_raw_contents()
 
@@ -413,10 +399,9 @@ def fips_column_creator(first, last, offset):
 
 
 def county_fips_merger(dataframe1, dataframe2):
-    '''
-    Merges FIPS code data from USDA with votes by county data from
+    """Merges FIPS code data from USDA with votes by county data from
     townhall.com.
-    '''
+    """
 
     df = pd.merge(dataframe1, dataframe2, on='MATCH_ID')
 
@@ -445,10 +430,9 @@ def county_fips_merger(dataframe1, dataframe2):
 
 
 def vote_margin_calculator(dataframe):
-    '''
-    Creates new column that reports the Clinton vote margin
+    """Creates new column that reports the Clinton vote margin
     as a percentage difference from Trump's vote share.
-    '''
+    """
 
     df = dataframe.copy()
 
@@ -464,9 +448,7 @@ def vote_margin_calculator(dataframe):
 
 
 def cases_loader():
-    '''
-    Stores case and death csv data from NYT's respository into dataframe.
-    '''
+    """Stores case and death csv data from NYT's respository into dataframe."""
 
     cases_url = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv'
     cases = pd.read_csv(cases_url)
@@ -477,10 +459,9 @@ def cases_loader():
 
 
 def population_loader():
-    '''
-    Returns a dataframe with population estimates from 2019 in each US County
-    using USDA data.
-    '''
+    """Returns a dataframe with population estimates from 2019 in each US 
+    County using USDA data.
+    """
 
     url = 'https://www.ers.usda.gov/webdocs/DataFiles/48747/PopulationEstimates.xls?v=6825.4'
 
@@ -497,9 +478,9 @@ def population_loader():
 
 
 def density_loader():
-    '''
-    Loads population density by county from the U.S. Census into a dataframe.
-    '''
+    """Loads population density by county from the U.S. Census into a 
+    dataframe.
+    """
 
     density_url = 'https://opendata.arcgis.com/datasets/21843f238cbb46b08615fc53e19e0daf_1.geojson'
 
@@ -514,12 +495,11 @@ def density_loader():
 
 
 def get_shape_files():
-    '''
-    Checks directory for necessary shape files. If files are not there, then
+    """Checks directory for necessary shape files. If files are not there, then
     they are downloaded from the Census. Returns the path to the .dbf file
     that is read by GeoPandas. If files are there, nothing is downloaded and
     only a statement saying files exist is returned.
-    '''
+    """
 
     path = os.path.dirname(os.path.abspath("__file__"))
 
@@ -551,10 +531,9 @@ def get_shape_files():
 
 
 def geo_data_loader():
-    '''
-    Uses the shape files are either downloaded or already exist on the machine
+    """Uses the shape files are either downloaded or already exist on the machine
     to return a dataframe containing all the info required to create a map.
-    '''
+    """
 
     path = os.path.dirname(os.path.abspath("__file__"))
     file_path = get_shape_files()
@@ -569,10 +548,9 @@ def geo_data_loader():
 
 
 def geo_data_cleaner(dataframe):
-    '''
-    Cleans up the GeoDataFrame so that it can be merged with the vote data
+    """Cleans up the GeoDataFrame so that it can be merged with the vote data
     and the COVID-19 case data.
-    '''
+    """
 
     df = dataframe.copy()
 
@@ -603,10 +581,9 @@ def geo_data_cleaner(dataframe):
 
 def data_merger(dataframe1, dataframe2, dataframe3, dataframe4, dataframe5,
                 dataframe6):
-    '''
-    Merges all datasets, keeps relevant columns, and formats fips codes
+    """Merges all datasets, keeps relevant columns, and formats fips codes
     correctly.
-    '''
+    """
 
     df = (dataframe1.merge(dataframe2, on='STATE')
                     .merge(dataframe3, on='COUNTYFP', how='inner')
@@ -630,9 +607,9 @@ def data_merger(dataframe1, dataframe2, dataframe3, dataframe4, dataframe5,
 
 
 def bin_creator(dataframe):
-    '''
-    Creates bins for continuous variables that will be used for choropleths.
-    '''
+    """Creates bins for continuous variables that will be used for 
+    choropleths.
+    """
 
     df = dataframe.copy()
 
@@ -694,9 +671,7 @@ def bin_creator(dataframe):
 
 
 def region_grouper(dataframe):
-    '''
-    Creates a new column that puts states into regional bins.
-    '''
+    """Creates a new column that puts states into regional bins."""
 
     df = dataframe.copy()
 
@@ -778,9 +753,7 @@ def region_grouper(dataframe):
 
 
 def default_graph(ax):
-    '''
-    Creates standard format for all subplots.
-    '''
+    """Creates standard format for all subplots."""
 
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
@@ -796,12 +769,11 @@ def default_graph(ax):
 
 
 def plotter(dataframe):
-    '''
-    Creates two plots. First, the daily change in Coronavirus cases over time
+    """Creates two plots. First, the daily change in Coronavirus cases over time
     between states who voted for Clinton in 2016 and states who voted for
     Trump in 2016. Second, the daily change in Coronavirus cases over time
     in different regions of the United States.
-    '''
+    """
 
     df = dataframe.copy()
 
@@ -812,9 +784,7 @@ def plotter(dataframe):
                     .agg({'CASES': 'sum', 'DEATH_RATE': 'mean'})
                     .reset_index())
 
-    '''
-    Calculates daily new cases for first subplot.
-    '''
+    """Calculates daily new cases for first subplot."""
     grouped_cases = (grouped_df.pivot(index='DATE',
                                       columns='PARTY_ID',
                                       values='CASES')
@@ -823,9 +793,7 @@ def plotter(dataframe):
     grouped_cases['DEM_NEW_CASES'] = grouped_cases['Democratic'].diff(1)
     grouped_cases['GOP_NEW_CASES'] = grouped_cases['Republican'].diff(1)
 
-    '''
-    Calculates new daily cases by region for second subplot.
-    '''
+    """Calculates new daily cases by region for second subplot."""
     regions_df = (df.groupby(['DATE', 'REGION'])
                     .agg({'CASES': 'sum'})
                     .reset_index()
@@ -840,18 +808,14 @@ def plotter(dataframe):
     regions_df['S_NEW_CASES'] = regions_df['South'].diff(1)
     regions_df['W_NEW_CASES'] = regions_df['West'].diff(1)
 
-    '''
-    Plots dataframes.
-    '''
+    """Plots grouped dataframes."""
     fig, axs = plt.subplots(2, 1, figsize=(15, 10))
 
     plt.rcParams['font.family'] = 'arial'
 
     axs = [default_graph(ax) for ax in axs]
 
-    '''
-    Plot first subplot.
-    '''
+    """Plot first subplot."""
     axs[0].fill_between(grouped_cases['DATE'],
                         grouped_cases['DEM_NEW_CASES'],
                         color='skyblue',
@@ -946,9 +910,7 @@ def plotter(dataframe):
 
     axs[0].legend(loc=(1.03, .5), framealpha=0)
 
-    '''
-    Plot second subplot.
-    '''
+    """Plot second subplot."""
     axs[1] = plt.gca()
     axs[1].fill_between(regions_df['DATE'],
                         regions_df['MW_NEW_CASES'],
@@ -991,6 +953,7 @@ def plotter(dataframe):
                 linewidth=2,
                 label='West')
 
+    """Add vertical flags."""
     axs[1].axvline(datetime.datetime(2020, 2, 3), color='k', linestyle=':')
     axs[1].axvline(datetime.datetime(2020, 3, 13), color='k', linestyle=':')
     axs[1].axvline(datetime.datetime(2020, 5, 26), color='k', linestyle=':')
@@ -1028,9 +991,7 @@ def plotter(dataframe):
 
 
 def df_to_gdf(dataframe):
-    '''
-    Converts a normal pandas dataframe into a geopandas dataframe.
-    '''
+    """Converts a normal pandas dataframe into a geopandas dataframe."""
 
     df = dataframe.copy()
 
@@ -1044,10 +1005,9 @@ def df_to_gdf(dataframe):
 
 
 def label_creator(dictionary):
-    '''
-    Returns the keys of a dictionary in reverse order.
+    """Returns the keys of a dictionary in reverse order.
     Helper function to create categorial labels in GeoPandas choropleths.
-    '''
+    """
 
     labels = [key for key, value in dictionary.items()]
     labels = labels[::-1]
@@ -1057,9 +1017,7 @@ def label_creator(dictionary):
 
 def choropleth_plotter(dataframe, column, cmap, plot_title, legend_title,
                        legend_labels, filename):
-    '''
-    Saves a choropleth as a .png.
-    '''
+    """Creates choropleth and saves as a .png."""
 
     df = dataframe.copy()
 
@@ -1089,9 +1047,7 @@ def choropleth_plotter(dataframe, column, cmap, plot_title, legend_title,
 
 
 def choropleth_infection(dataframe):
-    '''
-    Saves a choropleth of the infection rate across the continential U.S.
-    '''
+    """Saves a choropleth of the infection rate across the continential U.S."""
 
     df = dataframe.copy()
     df = df[df['DATE'] == '2020-12-01']
@@ -1119,9 +1075,9 @@ def choropleth_infection(dataframe):
 
 
 def choropleth_density(dataframe):
-    '''
-    Saves a choropleth of the population density across the continential U.S.
-    '''
+    """Saves a choropleth of the population density across the continential 
+    U.S.
+    """
 
     df = dataframe.copy()
     df = df[df['DATE'] == '2020-12-01']
@@ -1149,9 +1105,9 @@ def choropleth_density(dataframe):
 
 
 def choropleth_vote(dataframe):
-    '''
-    Saves a choropleth of 2016 Clinton Vote Margin across the continential U.S.
-    '''
+    """Saves a choropleth of 2016 Clinton Vote Margin across the continential 
+    U.S.
+    """
 
     df = dataframe.copy()
     df = df[df['DATE'] == '2020-12-01']
@@ -1182,10 +1138,9 @@ def choropleth_vote(dataframe):
 
 
 def run_ols(dataframe):
-    '''
-    Takes dataframe, runs two regressions, and writes each regression
+    """Takes dataframe, runs two regressions, and writes each regression
     output into a .txt file.
-    '''
+    """
 
     df = dataframe.copy()
 
