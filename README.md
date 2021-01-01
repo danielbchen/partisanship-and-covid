@@ -19,3 +19,18 @@ All data is merged into a dataframe which is then used to create two subplots tr
 ![Image of Code Diagram](https://github.com/datasci-harris/final-project-daniel-chen-final-project/blob/master/Write%20Up%20Documents/Code%20Diagram1000.png)
 
 Direct links to websources can be found in the Appendix. 
+
+### 3. Analysis 
+
+This section will be divided into two parts. The first part contains observational analysis where I utilize plots and choropleths to determine trends. The second section is more “causal” where I run regressions to back-up my findings. I put "causal" in quotes because the primary purpose of this project is to write Python code to retrieve data and create visuals. This analysis is not intended to be an academic exercise. In section 4 I highlight the limitations of my model. 
+
+#### 3.1 Observational Analysis 
+As I mentioned earlier in my Essential Question section, I am interested in tracking Coronavirus cases along party lines. Media outlets have characterized a split between Democrats and Republicans where the former appears more likely to take precautions such as mask wearing while the latter has been relatively more carefree. I would like to emphasize that these are *generalizations*. I am not claiming that every single Democrat wears a mask and every single Republican does not. However, I am curious to see if the empirical evidence to back up these broad claims exists. A simple method, shown below, would be to look at the total number of Coronavirus cases among states that voted for Hillary Clinton in 2016 compared to total cases among states that voted for Donald Trump in the same year where any given state’s majority vote for a candidate in the 2016 presidential election would serve as a proxy for the overall partisan lean of that state.
+
+*As a side note, I limit my analysis to the days between January 21, 2020 and December 1, 2020 for practical considerations. The NYT provides records beginning in late January and updates data daily, but I restrict the end date to the first of December because GitHub cannot handle the size of a .csv that includes data for more dates.*
+
+From the first subplot below, it’s clear that the states who voted for Trump in 2016 have a much larger change in the daily reported number of cases relative to states that voted for Clinton - though cases have surged across the board since Halloween. This trend has held consistent for the larger part of 2020 with the exception of a period between when President Trump declared a national emergency and when George Floyd related protests begun. The regional subplot tells a similar story. In the South - where states are typically red - cases surged during the summer relative to the rest of the country. Cases have also skyrocketed in the Autumn months for states in the Midwest. While there are a few notable blue states in this region, the majority are red or purple.
+
+![Image of lineplots](https://github.com/danielbchen/partisanship-and-covid/blob/main/Lineplots.png)
+
+While it may be tempting to definitively claim that partisanship is tied to Coronavirus cases, this would fail to acknowledge two factors. First, states have different populations, and second, more states voted for Trump over Clinton four years ago. In other words, the larger change in daily reported cases of the virus in Republican states may be simply explained by a larger total population. With this caveat in mind, I turn to creating choropleths which are shown below.
