@@ -34,3 +34,18 @@ From the first subplot below, it’s clear that the states who voted for Trump i
 ![Image of lineplots](https://github.com/danielbchen/partisanship-and-covid/blob/main/Lineplots.png)
 
 While it may be tempting to definitively claim that partisanship is tied to Coronavirus cases, this would fail to acknowledge two factors. First, states have different populations, and second, more states voted for Trump over Clinton four years ago. In other words, the larger change in daily reported cases of the virus in Republican states may be simply explained by a larger total population. With this caveat in mind, I turn to creating choropleths which are shown below.
+
+![Infection Rate Choropleth](https://github.com/danielbchen/partisanship-and-covid/blob/main/Infection%20Choropleth.png)
+
+The image above displays the infection rate on a county basis. I have purposefully limited the number of bins to six to more easily compare metrics across choropleths. However, it is worth noting that some counties have infection rates above 15%. I suspect that population may play a role, and I would would expect the counties with the highest rates of infection to line up with the counties that are the most heavily populated. This rationale makes sense given CDC recommendations to socially distance and wear a mask. People living in crowded areas likely face greater rates of transmission. However, this is not the case when looking at figure below which illustrates population density.
+
+![Population Density Choropleth](https://github.com/danielbchen/partisanship-and-covid/blob/main/Density%20Choropleth.png)
+
+While there are certainly similarities between the two maps especially in looking at dense urban locations including - but not limited to - New York City, Chicago, Southern Florida, and Southern California. With these exceptions, the two choropleths are otherwise different. Large parts of the central United States, such as North Dakota, South Dakota, Kansas, and Oklahoma do not line up. These states have populations spread thin relative to coastal cities, and yet, I observe higher rates of infections. To synthesize, population may not be the only predictor of cases, but it still plays an important role. To explore another possible predictor, I plot Clinton’s vote margin in 2016 shown below.
+
+![Clinton Vote Margin Choropleth](https://github.com/danielbchen/partisanship-and-covid/blob/main/Vote%20Choropleth.png)
+
+
+The infection rate choropleth and the Clinton vote margin choropleth are not carbon copies, but in comparing two maps, the former more closely resembles the latter as opposed to comparing the infection rate choropleth and the population density choropleth. The intensities are not exactly identical, but on the surface, it appears that counties that voted for Trump to a greater degree are also counties that exhibit greater rates of infection. In other words, the margin in which Trump wins does not perfectly predict the intensity of infection, but the two appear to be somewhat related in general. In the next section, I turn to regression analyses to examine whether or not there is a ”causal” relationship.
+
+#### 3.2 Causal Analysis 
