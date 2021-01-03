@@ -77,3 +77,10 @@ Though the difference in the infection rate between democratic and republican co
 In looking at the R-Squared value, party identification in model 2 only explains about 5% of the variation in the infection rate. Put differently, party identification is most likely correlated with other observables excluded from the model that better explain infection rates. Party identification is likely tied to race and income. I suspect income to be a driver of infection because individuals with higher incomes are better equipped to follow public health guidelines. They have the capital to purchase personal protective equipment and are likely privileged to work remotely where they are less exposed to human interaction compared to a low wage working individual in the gig economy who is required to serve restaurant patrons or fulfill online orders.
 
 Moreover, income is tied to other extraneous factors such as access to health care and one’s individual well-being. Higher income areas arguably have better access to health care services that mitigate the risk of infection. Additionally, higher-income earners are likely better able to afford a healthy lifestyle. They are likely to be better off in terms of personal health and wellness. Lower-income earners may face more health hardships and pre-existing conditions and compromised immune systems likely increase susceptibility to the novel virus.
+
+### 5. Appendix 
+
+This section details all the files included in this repository and contains links to data sources. 
+
+1. [covid_partisanship_analysis.py](https://github.com/danielbchen/partisanship-and-covid/blob/main/covid_partisanship_analysis.py): Python script containing entire code. 
+2. [Code Diagram1000.png](https://github.com/danielbchen/partisanship-and-covid/blob/main/Code%20Diagram1000.png): .png file outlining structure of the Python script. Identical to the image found in section 2. 
