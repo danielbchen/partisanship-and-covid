@@ -82,7 +82,7 @@ Moreover, income is tied to other extraneous factors such as access to health ca
 
 This section details all the files included in this repository and contains links to data sources. 
 
-1. [covid_partisanship_analysis.py](https://github.com/danielbchen/partisanship-and-covid/blob/main/covid_partisanship_analysis.py): Python script containing entire code. 
+1. [main.py](https://github.com/danielbchen/partisanship-and-covid/blob/main/covid_partisanship_analysis.py): Python script containing entire code. 
 2. [Code Diagram1000.png](https://github.com/danielbchen/partisanship-and-covid/blob/main/Code%20Diagram1000.png): A .png file outlining structure of the Python script. Identical to the image found in section 2. 
 3. [Votes by State in 2016.csv](https://github.com/danielbchen/partisanship-and-covid/blob/main/Votes%20by%20State%20in%202016.csv): A .csv file containing 2016 presidential election votes by state retreived from [Wikipedia](https://en.wikipedia.org/wiki/2016_United_States_presidential_election).
 4. [Votes by County in 2016.csv](https://github.com/danielbchen/partisanship-and-covid/blob/main/Votes%20by%20County%20in%202016.csv): A .csv file containing 2016 presidential election votes by county retrieved from [Townhall](https://townhall.com/election/2016/president).
