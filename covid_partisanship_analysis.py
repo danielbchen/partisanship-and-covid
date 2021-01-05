@@ -18,8 +18,7 @@ import zipfile
 
 
 def main():
-    '''
-    Saves following files:
+    """Saves following files:
 
     1) Total votes by state for Clinton and Trump in 2016.
         (WEBSCRAPED VIA WIKIPEDIA.COM)
@@ -46,7 +45,7 @@ def main():
         Total Cases ~ Party Identification + Population Density
     13) A .txt file containing regression results where:
         Infection Rate ~ Party Identification
-    '''
+    """
 
     print('Running script, please wait about two minutes!')
 
